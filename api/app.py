@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 import requests
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 
-app = Flask(__name__, template_folder="template")
+app = Flask(__name__, template_folder="templates")
 app.secret_key = "change-this-secret-key"
 
 DATA_FILE = Path(__file__).with_name("data.json")
@@ -152,5 +152,6 @@ if __name__ == "__main__":
     if DATA_FILE.stat().st_size == 0:
         with DATA_FILE.open("w", encoding="utf-8") as file:
             json.dump([], file)
+
 
     app.run(host="0.0.0.0", port=5000, debug=True)
