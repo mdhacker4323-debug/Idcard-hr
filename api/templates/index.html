@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student ID Card Submission Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <style>
+      /* Global Reset and Variables - High Contrast Dark Mode */
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #ffffff; /* Main highlight color (White) */
+        --secondary: #aaaaaa; /* Secondary highlight color (Light Gray) */
+        --accent: #222222; /* Darkest surface element color */
+        --surface: #000000; /* Main card background (Pure Black) */
+        --muted: #888888; /* Muted text and helpers */
+        --text-dark: #ffffff; /* Main text color (White) */
+        --text-light: #000000; /* Button text color (Black) */
+        --shadow-elevation-medium: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05);
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        line-height: 1.5;
+      }
+
+      /* Keyframe for Text Animation */
+      @keyframes neonGlow {
+        0%, 100% {
+          text-shadow: 0 0 4px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        50% {
+          text-shadow: 0 0 8px var(--primary), 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+      }
+
+      /* Animated Background and Card Styling */
+      body {
+        background: linear-gradient(135deg, #111111, #000000, #111111);
+        background-size: 180% 180%;
+        animation: gradientShift 18s ease infinite;
+        min-height: 100vh;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        overflow-x: hidden;
+        margin: 0;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.4;
+        z-index: 0;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      body::before {
+        width: 450px;
+        height: 450px;
+        top: -180px;
+        right: -150px;
+      }
+
+      body::after {
+        width: 380px;
+        height: 380px;
+        bottom: -160px;
+        left: -160px;
+      }
+
+      .card {
+        background: var(--surface);
+        color: var(--text-dark);
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        max-width: 1000px;
+        width: 100%;
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(25px);
+        display: flex;
+        flex-direction: row;
+        position: relative;
+      }
+
+      .card-media {
+        flex: 1 1 35%;
+        min-height: 450px;
+        /* Using a placeholder monochrome image (base64 SVG) for better standalone compatibility */
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.9),
+            rgba(0, 0, 0, 0.9)
+          ),
+          url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDY2NyI+PHJlY3Qgd2lkdGg9IjEwMDAiIGhlaWdodD0iNjY3IiBmaWxsPSIjMjIyIi8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIwIiBkPSJNMCAwTDEwMDAgNjY3TTIyNSAzNzVjMC0xMjUgMTc1LTIyNSAxNzUtMjI1cy00MDAtMTI1LTIyNS0xMjUtMjI1IDE1MC0yMjUgMTc1YzAgMjUgMjAwIDc1IDIyNSA3NXoiLz48L3N2Zz4=');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        filter: grayscale(100%);
+      }
+
+      .card-media::after {
+        content: "SECURE SUBMISSION";
+        position: absolute;
+        inset: 1.5rem;
+        border: 3px dashed var(--secondary);
+        border-radius: 1.25rem;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .form-section {
+        flex: 1 1 65%;
+        background: var(--accent);
+        color: var(--text-dark);
+        padding: 3.5rem;
+      }
+
+      .intro {
+        margin-bottom: 2.5rem;
+      }
+
+      .intro h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 3.5vw, 2.6rem);
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1.2;
+        /* Applying the Animation Here */
+        animation: neonGlow 4s ease-in-out infinite alternate;
+      }
+
+      .intro p {
+        margin-top: 0.85rem;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 1.05rem;
+      }
+
+      .flash-container {
+        margin-bottom: 1.75rem;
+      }
+
+      .alert {
+        border-radius: 0.85rem;
+        padding: 1rem 1.2rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        font-size: 0.9rem;
+      }
+      
+      .alert-info {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #cccccc;
+      }
+      
+      .alert-success { 
+        background: rgba(100, 255, 100, 0.05);
+        border-color: rgba(100, 255, 100, 0.15);
+        color: #00ff00;
+      }
+
+      .alert-danger { 
+        background: rgba(255, 100, 100, 0.05);
+        border-color: rgba(255, 100, 100, 0.15);
+        color: #ff3333;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .field-full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+        font-size: 0.95rem;
+      }
+
+      input,
+      select {
+        background-color: #111111;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.75rem;
+        padding: 1rem 1.1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        font-size: 1rem;
+        color: var(--primary);
+        width: 100%;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15);
+        outline: none;
+      }
+
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 3rem;
+      }
+      
+      select option {
+          background-color: #111111;
+          color: var(--primary);
+      }
+
+
+      input[type="file"] {
+        padding: 0.95rem 1rem;
+      }
+
+      .helper-text {
+        display: block;
+        margin-top: 0.4rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .form-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+      }
+
+      .form-footer small {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .btn-submit {
+        background: var(--primary);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        font-size: 1rem;
+        color: var(--text-light);
+        cursor: pointer;
+        text-transform: uppercase;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 16px 30px rgba(255, 255, 255, 0.4);
+      }
+
+      footer {
+        text-align: center;
+        color: var(--muted);
+        margin-top: 3rem;
+      }
+
+      footer p {
+        font-size: 0.85rem;
+      }
+
+      footer a {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.2s ease;
+      }
+
+      footer a:hover {
+        color: var(--primary);
+        text-decoration: underline;
+      }
+
+      /* Animation for background gradient */
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 900px) {
+        body {
+          padding: 1.5rem 1rem;
+        }
+
+        .card {
+          flex-direction: column;
+          max-width: 500px;
+        }
+
+        .card-media {
+          display: none;
+        }
+
+        .form-section {
+          padding: 2.5rem 1.5rem;
+        }
+
+        .intro {
+            margin-bottom: 2rem;
+        }
+
+        .intro h1 {
+            font-size: 1.8rem;
+        }
+
+        .form-footer {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 1rem;
+          margin-top: 2rem;
+          padding-top: 1rem;
+        }
+
+        .btn-submit {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .form-section {
+          padding: 1.75rem 1rem;
+        }
+        
+        .form-grid {
+            gap: 1rem;
+        }
+        
+        .field {
+            min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-media" aria-hidden="true"></div>
+      <div class="form-section">
+        <div class="intro">
+          <h1>Student ID Card Portal</h1>
+          <p>
+            Please accurately fill in your details below. Upload a clear, recent photo (headshot recommended) for your official Student ID card.
+          </p>
+        </div>
+
+        <div class="flash-container">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </div>
+        <form action="/submit" method="POST" enctype="multipart/form-data" novalidate>
+          <div class="form-grid">
+            <div class="field field-full">
+              <label for="full_name">Full Name</label>
+              <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="e.g. Md.HR"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="registration_number">Registration Number</label>
+              <input
+                type="text"
+                id="registration_number"
+                name="registration_number"
+                placeholder="e.g. 1502403XXX"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="roll_number">Roll Number</label>
+              <input
+                type="text"
+                id="roll_number"
+                name="roll_number"
+                placeholder="e.g. 123456"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="session">Academic Session</label>
+              <input
+                type="text"
+                id="session"
+                name="session"
+                placeholder="e.g. 2024-2025"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="mobile_number">Mobile Number</label>
+              <input
+                type="tel"
+                id="mobile_number"
+                name="mobile_number"
+                placeholder="e.g. 0123-4567890"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="blood_group">Blood Group</label>
+              <select id="blood_group" name="blood_group" required>
+                <option value="" selected disabled>Select blood group</option>
+                <option>O+</option>
+                <option>O-</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="photo_file">Upload Official Photo</label>
+              <input
+                type="file"
+                id="photo_file"
+                name="photo_file"
+                accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                required
+              />
+              <small class="helper-text">Allowed formats: PNG, JPG, JPEG (max 5MB, clear headshot).</small>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <small>Data is securely managed. For technical assistance, please contact the administrative office.</small>
+            <button type="submit" class="btn-submit">Submit Information</button>
+          </div>
+        </form>
+        
+        <footer>
+          <p>
+            For any queries or issues:
+            <a href="https://www.facebook.com/md.hr.o.o.2024" target="_blank">contact with developer</a>
+          </p>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

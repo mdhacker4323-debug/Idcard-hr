@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Login</title>
+    <style>
+      :root {
+        --blue-primary: #3b82f6;
+        --blue-secondary: #6366f1;
+        --deep-indigo: #1e1b4b;
+        --surface-dark: rgba(15, 23, 42, 0.85);
+        --text-light: #e2e8f0;
+        --text-muted: #94a3b8;
+        --error-red: #f87171;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", "Segoe UI", sans-serif;
+        color: var(--text-light);
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
+        background-size: 200% 200%;
+        animation: shiftBackground 12s ease alternate infinite;
+        padding: 1.5rem;
+      }
+
+      @keyframes shiftBackground {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 100% 100%;
+        }
+      }
+
+      .login-card {
+        width: min(420px, 100%);
+        padding: 2.5rem 2rem;
+        border-radius: 1.5rem;
+        background: var(--surface-dark);
+        box-shadow: 0 25px 45px rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-card::before {
+        content: "";
+        position: absolute;
+        inset: -40% 40% 60% -40%;
+        background: radial-gradient(circle at top, rgba(99, 102, 241, 0.4), transparent 65%);
+        opacity: 0.7;
+        transform: rotate(8deg);
+        pointer-events: none;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.35rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      p.description {
+        margin: 0 0 2rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.65rem;
+        font-weight: 600;
+        color: var(--text-light);
+        letter-spacing: 0.01em;
+      }
+
+      input[type="password"] {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border-radius: 0.85rem;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: rgba(15, 23, 42, 0.6);
+        color: var(--text-light);
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        outline: none;
+      }
+
+      input[type="password"]:focus {
+        border-color: rgba(99, 102, 241, 0.65);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 999px;
+        color: var(--text-light);
+        background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+        box-shadow: 0 15px 25px rgba(79, 70, 229, 0.35);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 35px rgba(79, 70, 229, 0.45);
+      }
+
+      .flash-messages {
+        margin-bottom: 1.25rem;
+      }
+
+      .flash-message {
+        padding: 0.85rem 1rem;
+        border-radius: 0.85rem;
+        font-size: 0.9rem;
+        background: rgba(248, 113, 113, 0.2);
+        border: 1px solid rgba(248, 113, 113, 0.45);
+        color: #fecaca;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 2rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s ease;
+      }
+
+      .back-link span {
+        font-size: 1.2rem;
+      }
+
+      .back-link:hover {
+        color: var(--blue-primary);
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 2rem 1.75rem;
+        }
+
+        h1 {
+          font-size: 1.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="login-card">
+      <h1>Admin Access</h1>
+      <p class="description">Enter the admin password to review submitted ID cards.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <form method="post">
+        <label for="password">Admin Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="submit">Unlock Dashboard</button>
+      </form>
+
+      <a class="back-link" href="{{ url_for('index') }}">
+        <span>←</span>
+        Return to submission form
+      </a>
+    </main>
+  </body>
+</html>
